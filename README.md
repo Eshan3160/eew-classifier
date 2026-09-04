@@ -107,4 +107,6 @@ To be transparent: the training data is synthetically generated (not real seismo
 
 ## Author
 
-Eshan — 2nd-year CSE & Data Science student. Built this project to demonstrate applied ML and backend engineering for a Japan-focused internship application.
+**Eshan** — 2nd-year CSE & Data Science student. Built this project to demonstrate applied ML and backend engineering for a Japan-focused internship application.
+
+GitHub: [github.com/Eshan3160](https://github.com/Eshan3160) · LinkedIn: [linkedin.com/in/eshan-shaarmaa](https://www.linkedin.com/in/eshan-shaarmaa-b76101429)
