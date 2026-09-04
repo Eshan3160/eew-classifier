@@ -41,3 +41,70 @@ I'm including this in the README deliberately: catching and fixing that leak, ra
 | Deployment | Docker, deployed on Render |
 
 ## Architecture
+
+```
+Raw 3-axis waveform (POST /predict)
+        ↓
+Bandpass filter (0.5–10 Hz, zero-phase Butterworth)
+        ↓
+Feature extraction (PGA, energy, dominant frequency, Pd, τc — per axis + combined)
+        ↓
+LightGBM classifier (10-class, trained on 6,000 simulated events)
+        ↓
+Predicted shindo class + full probability distribution
+```
+
+## Running locally
+
+```bash
+git clone https://github.com/Eshan3160/eew-classifier.git
+cd eew-classifier/api
+pip install -r requirements.txt
+uvicorn main:app --reload
+```
+Then open `http://127.0.0.1:8000/docs`.
+
+## Running with Docker
+
+```bash
+docker build -t eew-classifier .
+docker run -p 8000:8000 eew-classifier
+```
+
+## Example request
+
+```bash
+curl -X POST https://eew-classifier.onrender.com/predict \
+  -H "Content-Type: application/json" \
+  -d '{"ns": [...], "ew": [...], "ud": [...], "sampling_rate": 100}'
+```
+
+Returns:
+```json
+{
+  "predicted_shindo": "5+",
+  "predicted_class_index": 6,
+  "confidence": 0.9166,
+  "probabilities": {
+    "0": 0.0030,
+    "1": 0.0030,
+    "2": 0.0030,
+    "3": 0.0030,
+    "4": 0.0034,
+    "5-": 0.0590,
+    "5+": 0.9166,
+    "6-": 0.0030,
+    "6+": 0.0030,
+    "7": 0.0030
+  }
+}
+
+```
+
+## What's simulated vs. real
+
+To be transparent: the training data is synthetically generated (not real seismometer recordings), since obtaining and licensing real K-NET data was outside the scope of a solo learning project. The feature extraction methodology (bandpass filtering, Pd, τc) and the target labels (JMA shindo scale) are real and match operational Japanese EEW practice. The pipeline architecture — filter → extract → classify → serve — is built to be a drop-in replacement ready for real sensor data.
+
+## Author
+
+Eshan — 2nd-year CSE & Data Science student. Built this project to demonstrate applied ML and backend engineering for a Japan-focused internship application.
