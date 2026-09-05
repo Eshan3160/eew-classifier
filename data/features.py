@@ -3,17 +3,16 @@ features.py
 ------------
 Preprocessing + feature extraction for a 3-second, 3-axis acceleration window.
 
-Requested features (per your spec):
+Extracts 20 features per window (5 metrics x [3 axes + 1 vector magnitude]):
   - PGA (Peak Ground Acceleration)
   - Signal energy
   - FFT dominant frequency
-
-Added on top, because they're the actual features real EEW systems use
-(the Wu & Kanamori 2005 P-wave method, used operationally in Japan's EEW):
   - Pd: peak displacement in the P-wave window (integrate acc -> vel -> disp)
   - tau_c: characteristic period, tau_c = 2*pi*sqrt(integral(disp^2)/integral(vel^2))
-    Larger tau_c early in the P-wave correlates with a larger eventual event.
+    (Pd and tau_c are the Wu & Kanamori 2005 P-wave features used operationally
+    in Japan's EEW system.)
 """
+
 
 import numpy as np
 from scipy.signal import butter, sosfiltfilt
